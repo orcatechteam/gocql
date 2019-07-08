@@ -33,18 +33,22 @@ var (
 // Marshaler is the interface implemented by objects that can marshal
 // themselves into values understood by Cassandra.
 type Marshaler interface {
-	MarshalCQL(info TypeInfo) ([]byte, error)
+	MarshalCQL(typeInfo interface{}) ([]byte, error)
 }
 
 // Unmarshaler is the interface implemented by objects that can unmarshal
 // a Cassandra specific description of themselves.
 type Unmarshaler interface {
-	UnmarshalCQL(info TypeInfo, data []byte) error
+	UnmarshalCQL(typeInfo interface{}, data []byte) error
 }
 
 // Marshal returns the CQL encoding of the value for the Cassandra
 // internal type described by the info parameter.
-func Marshal(info TypeInfo, value interface{}) ([]byte, error) {
+func Marshal(typeInfo interface{}, value interface{}) ([]byte, error) {
+	info, ok := typeInfo.(TypeInfo)
+	if !ok {
+		return nil, fmt.Errorf("typeInfo should be type TypeInfo, received: %T", typeInfo)
+	}
 	if info.Version() < protoVersion1 {
 		panic("protocol version not set")
 	}
@@ -118,7 +122,11 @@ func Marshal(info TypeInfo, value interface{}) ([]byte, error) {
 // Unmarshal parses the CQL encoded data based on the info parameter that
 // describes the Cassandra internal data type and stores the result in the
 // value pointed by value.
-func Unmarshal(info TypeInfo, data []byte, value interface{}) error {
+func Unmarshal(typeInfo interface{}, data []byte, value interface{}) error {
+	info, ok := typeInfo.(TypeInfo)
+	if !ok {
+		return nil, fmt.Errorf("typeInfo should be type TypeInfo, received: %T", typeInfo)
+	}
 	if v, ok := value.(Unmarshaler); ok {
 		return v.UnmarshalCQL(info, data)
 	}
@@ -1262,15 +1270,15 @@ func unmarshalDate(info TypeInfo, data []byte, value interface{}) error {
 		*v = time.Unix(0, timestamp*int64(time.Millisecond)).In(time.UTC)
 		return nil
 	case *string:
-                if len(data) == 0 {
-                        *v = ""
-                        return nil
-                }
-                var origin uint32 = 1 << 31
-                var current uint32 = binary.BigEndian.Uint32(data)
-                timestamp := (int64(current) - int64(origin)) * 86400000
+		if len(data) == 0 {
+			*v = ""
+			return nil
+		}
+		var origin uint32 = 1 << 31
+		var current uint32 = binary.BigEndian.Uint32(data)
+		timestamp := (int64(current) - int64(origin)) * 86400000
 		*v = time.Unix(0, timestamp*int64(time.Millisecond)).In(time.UTC).Format("2006-01-02")
-                return nil
+		return nil
 	}
 	return unmarshalErrorf("can not unmarshal %s into %T", info, value)
 }
@@ -1951,7 +1959,7 @@ type UDTMarshaler interface {
 	// MarshalUDT will be called for each field in the the UDT returned by Cassandra,
 	// the implementor should marshal the type to return by for example calling
 	// Marshal.
-	MarshalUDT(name string, info TypeInfo) ([]byte, error)
+	MarshalUDT(name string, typeInfo interface{}) ([]byte, error)
 }
 
 // UDTUnmarshaler should be implemented by users wanting to implement custom
@@ -1960,7 +1968,7 @@ type UDTUnmarshaler interface {
 	// UnmarshalUDT will be called for each field in the UDT return by Cassandra,
 	// the implementor should unmarshal the data into the value of their chosing,
 	// for example by calling Unmarshal.
-	UnmarshalUDT(name string, info TypeInfo, data []byte) error
+	UnmarshalUDT(name string, typeInfo interface{}, data []byte) error
 }
 
 func marshalUDT(info TypeInfo, value interface{}) ([]byte, error) {

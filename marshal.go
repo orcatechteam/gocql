@@ -125,7 +125,7 @@ func Marshal(typeInfo interface{}, value interface{}) ([]byte, error) {
 func Unmarshal(typeInfo interface{}, data []byte, value interface{}) error {
 	info, ok := typeInfo.(TypeInfo)
 	if !ok {
-		return nil, fmt.Errorf("typeInfo should be type TypeInfo, received: %T", typeInfo)
+		return fmt.Errorf("typeInfo should be type TypeInfo, received: %T", typeInfo)
 	}
 	if v, ok := value.(Unmarshaler); ok {
 		return v.UnmarshalCQL(info, data)

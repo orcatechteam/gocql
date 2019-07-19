@@ -18,7 +18,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/gocql/gocql/internal/lru"
+	"github.com/orcatechteam/gocql/internal/lru"
 )
 
 // Session is the interface used by users to interact with the database.
@@ -722,7 +722,7 @@ func (qm *queryMetrics) latency() int64 {
 	qm.l.Lock()
 	var (
 		attempts int
-		latency int64
+		latency  int64
 	)
 	for _, metric := range qm.m {
 		attempts += metric.Attempts
@@ -1076,7 +1076,7 @@ func (q *Query) PageState(state []byte) *Query {
 // CAS operations which do not end in Cas.
 //
 // See https://issues.apache.org/jira/browse/CASSANDRA-11099
-// https://github.com/gocql/gocql/issues/612
+// https://github.com/orcatechteam/gocql/issues/612
 func (q *Query) NoSkipMetadata() *Query {
 	q.disableSkipMetadata = true
 	return q
@@ -1503,16 +1503,16 @@ func NewBatch(typ BatchType) *Batch {
 func (s *Session) NewBatch(typ BatchType) *Batch {
 	s.mu.RLock()
 	batch := &Batch{
-		Type:              typ,
-		rt:                s.cfg.RetryPolicy,
-		serialCons:        s.cfg.SerialConsistency,
-		observer:          s.batchObserver,
-		session:           s,
-		Cons:              s.cons,
-		defaultTimestamp:  s.cfg.DefaultTimestamp,
-		keyspace:          s.cfg.Keyspace,
-		metrics:           &queryMetrics{m: make(map[string]*hostMetrics)},
-		spec:              &NonSpeculativeExecution{},
+		Type:             typ,
+		rt:               s.cfg.RetryPolicy,
+		serialCons:       s.cfg.SerialConsistency,
+		observer:         s.batchObserver,
+		session:          s,
+		Cons:             s.cons,
+		defaultTimestamp: s.cfg.DefaultTimestamp,
+		keyspace:         s.cfg.Keyspace,
+		metrics:          &queryMetrics{m: make(map[string]*hostMetrics)},
+		spec:             &NonSpeculativeExecution{},
 	}
 
 	s.mu.RUnlock()
@@ -1978,7 +1978,7 @@ var (
 	ErrUnavailable          = errors.New("unavailable")
 	ErrUnsupported          = errors.New("feature not supported")
 	ErrTooManyStmts         = errors.New("too many statements")
-	ErrUseStmt              = errors.New("use statements aren't supported. Please see https://github.com/gocql/gocql for explanation.")
+	ErrUseStmt              = errors.New("use statements aren't supported. Please see https://github.com/orcatechteam/gocql for explanation.")
 	ErrSessionClosed        = errors.New("session has been closed")
 	ErrNoConnections        = errors.New("gocql: no hosts available in the pool")
 	ErrNoKeyspace           = errors.New("no keyspace provided")

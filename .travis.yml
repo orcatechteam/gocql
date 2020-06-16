@@ -37,7 +37,7 @@ go:
 install:
   - ./install_test_deps.sh $TRAVIS_REPO_SLUG
   - cd ../..
-  - cd orcatechteam/gocql
+  - cd gocql/gocql
   - go get .
 
 script:

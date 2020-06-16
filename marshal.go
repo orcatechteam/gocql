@@ -1358,17 +1358,6 @@ func unmarshalDuration(info TypeInfo, data []byte, value interface{}) error {
 	switch v := value.(type) {
 	case Unmarshaler:
 		return v.UnmarshalCQL(info, data)
-	case *int64:
-		months, days, nanos := decVints(data)
-		*v = nanos
-		// when unmarshaling to int64 are approximated
-		if months > 0 {
-			*v = *v * int64(months) * 43800 * int64(time.Minute)
-		}
-		if days > 0 {
-			*v = *v * int64(days) * 24 * int64(time.Hour)
-		}
-		return nil
 	case *time.Duration:
 		months, days, nanos := decVints(data)
 		*v = time.Duration(nanos)

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/orcatechteam/gocql/internal/lru"
+	"github.com/gocql/gocql/internal/lru"
 )
 
 const defaultMaxPreparedStmts = 1000

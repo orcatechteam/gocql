@@ -12,7 +12,7 @@ The goal of the gocql project is to provide a stable and robust CQL driver for G
 
 The following is a check list of requirements that need to be satisfied in order for us to merge your patch:
 
-* You should raise a pull request to orcatechteam/gocql on Github
+* You should raise a pull request to gocql/gocql on Github
 * The pull request has a title that clearly summarizes the purpose of the patch
 * The motivation behind the patch is clearly defined in the pull request summary
 * Your name and email have been added to the `AUTHORS` file (for copyright purposes)
@@ -44,8 +44,8 @@ There are legitimate examples of where it is infeasible to write a regression te
 
 Examples of pull requests that have been accepted without tests include:
 
-* https://github.com/orcatechteam/gocql/pull/181 - this patch would otherwise require a multi-node cluster to be booted as part of the CI build
-* https://github.com/orcatechteam/gocql/pull/179 - this bug can only be reproduced under heavy load in certain circumstances
+* https://github.com/gocql/gocql/pull/181 - this patch would otherwise require a multi-node cluster to be booted as part of the CI build
+* https://github.com/gocql/gocql/pull/179 - this bug can only be reproduced under heavy load in certain circumstances
 
 ### Sign Off Procedure
 

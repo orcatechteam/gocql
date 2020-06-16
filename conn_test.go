@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/orcatechteam/gocql/internal/streams"
+	"github.com/gocql/gocql/internal/streams"
 )
 
 const (

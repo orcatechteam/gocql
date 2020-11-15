@@ -1391,12 +1391,21 @@ func unmarshalDuration(info TypeInfo, data []byte, value interface{}) error {
 
 func decVints(data []byte) (int32, int32, int64) {
 	month, i := decVint(data)
+	if i >= len(data) {
+		return int32(month), 0, 0
+	}
 	days, j := decVint(data[i:])
+	if i+j >= len(data) {
+		return int32(month), int32(days), 0
+	}
 	nanos, _ := decVint(data[i+j:])
 	return int32(month), int32(days), nanos
 }
 
 func decVint(data []byte) (int64, int) {
+	if len(data) == 0 {
+		return 0, 1
+	}
 	firstByte := data[0]
 	if firstByte&0x80 == 0 {
 		return decIntZigZag(uint64(firstByte)), 1
